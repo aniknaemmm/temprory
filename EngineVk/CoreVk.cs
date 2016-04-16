@@ -8,9 +8,10 @@ using VkNet.Enums.Filters;
 
 namespace EngineVk
 {
-    public class CoreVk
+    public class CoreVk:IDisposable
     {
         private const int APP_ID = 5417317;
+        private VkApi vk;
         public bool authorize { private set; get; }
 
         public CoreVk()
@@ -20,8 +21,8 @@ namespace EngineVk
         public VkApi Init(string login, string pass)
         {
 
-            var vk = new VkApi();
-            Settings scope = Settings.Friends;
+            vk = new VkApi();
+            Settings scope = Settings.All;
             vk.Authorize(new ApiAuthParams
             {
                 ApplicationId = APP_ID,
@@ -34,6 +35,61 @@ namespace EngineVk
 
         }
 
+
+        public UserVk getUsers(long Userid)
+        {
+            var info = vk.Users.Get(Userid);
+            return new UserVk(info);
+        }
+
+        public List<UserVk> getUsers(long[] Userid)
+        {
+            var info = vk.Users.Get(Userid);
+            List<UserVk> users = new List<UserVk>();
+            foreach (var user in info)
+            {
+                users.Add(new UserVk(user));
+            }
+            return users;
+        }
+
+        //public UserVk getUsers(long Userid, ProfileFields profileFiled)
+        //{
+        //    var info = vk.Users.Get(Userid,profileFiled);
+        //    var ss = info.Counters.Audios;
+        //    return new UserVk(info);
+        //} TODO search information for gets request users info
+
+        //public void getAudio(long userId)
+        //{
+        //    VkNet.Model.User user;
+        //    var audios = vk.Audio.Get(userId, out user, null, null, 3, 5);
+        //    //var ids = vk.Audio.Get(userId,out user).Select(x => x.Id).ToList();
+        //    var t = audios;
+        //}TODO audio
+
+
+        public void getDialog()
+        {
+            int totalCount=0;
+            int unreadCount=0;
+            var t = vk.Messages.GetDialogs(out totalCount,out unreadCount,10,0,false,0,0);
+        }
+
+        public void getMessage()
+        {
+            VkNet.Model.RequestParams.MessagesGetParams paramss = new VkNet.Model.RequestParams.MessagesGetParams();
+            paramss.Count = 20;
+            paramss.Filters = VkNet.Enums.MessagesFilter.All;
+            int gfgf;
+            System.TimeSpan re = default(System.TimeSpan);
+            var r = vk.Messages.Get(VkNet.Enums.MessageType.Sended,out gfgf, 100,0,re,VkNet.Enums.MessagesFilter.All,0);
+        }
+
+        public void Dispose()
+        {
+            vk = null;
+        }
     }
 }
 
