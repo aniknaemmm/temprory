@@ -81,15 +81,32 @@ namespace EngineVk
             VkNet.Model.RequestParams.MessagesGetParams paramss = new VkNet.Model.RequestParams.MessagesGetParams();
             paramss.Count = 20;
             paramss.Filters = VkNet.Enums.MessagesFilter.All;
-            int gfgf;
+            int gfgf=100;
             System.TimeSpan re = default(System.TimeSpan);
-            var r = vk.Messages.Get(VkNet.Enums.MessageType.Sended,out gfgf, 100,0,re,VkNet.Enums.MessagesFilter.All,0);
+            var r = vk.Messages.Get(VkNet.Enums.MessageType.Sended,out gfgf,200,0,null,VkNet.Enums.MessagesFilter.All,10);
+            foreach (var fd in r) {
+                var g=fd.Body;
+                var t = fd.ActionText;
+            }
+        }
+
+
+        public long sendMessage(UserVk user,string message)
+        {
+            VkNet.Model.RequestParams.MessagesSendParams settings = new VkNet.Model.RequestParams.MessagesSendParams()
+                                                                        { UserId=user.UID, Message= message};
+
+           return vk.Messages.Send(settings);
+
         }
 
         public void Dispose()
         {
             vk = null;
         }
+
+
+
     }
 }
 

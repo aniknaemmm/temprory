@@ -91,5 +91,12 @@ namespace EngineVk.Test
             vk.getMessage();
         }
 
+        [TestMethod]
+        public void sendMessage()
+        {
+            initMethod();
+            vk.sendMessage(new UserVk(16227876,"Uht","cdcd"),"fcfc");
+        }
+
     }
 }
